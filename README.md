@@ -5,6 +5,10 @@ What is left to do is had another rect that is IA driven, add collisions and VOI
 Of course we could had a main menu, keeping track of scores, and make the IA faster each time we get over 5 points
 At the moment you can move the rect using ZQSD (yes, i am french :D)
 
+### HOW TO PLAY
+For now, just press Z to go up and S to do down with player 1
+Press Up arrow and Down arrow for player 2
+
 ### FEATURES :
  What has been added :
 - Logging system that log errors and critical errors in a file
