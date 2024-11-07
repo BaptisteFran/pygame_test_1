@@ -3,6 +3,8 @@ import sys
 
 import pygame
 
+from scripts.player import Player
+
 
 class Game:
     def __init__(self):
@@ -21,19 +23,18 @@ class Game:
         """
         PLAYER 1
         """
-        self.player_pos = pygame.Vector2(20, self.screen.get_height() / 2)
-        self.direction1 = pygame.Vector2(0, 0)
-        self.speed = 300
+        self.player = Player(game=self, name="player_1", x=20, y=(self.screen.get_height() // 2) - 75, speed=300)
+
 
         """
         PLAYER 2
         """
-        self.player2_pos = pygame.Vector2(self.screen.get_width() - 40, self.screen.get_height() / 2)
-        self.direction2 = pygame.Vector2(0, 0)
+        self.player_2 = Player(game=self, name="player_2", x=self.screen.get_width() - 40, y=(self.screen.get_height() // 2) - 75, speed=300)
 
         """
         MOVING CIRCLE
         """
+        self.speed = 300
         self.circle_position = pygame.Vector2()  # init circle at (0,0)
         self.circle_radius = 15
         self.circle_movement = pygame.Vector2(1, 1)  # init circle movement at (1,1)
@@ -69,12 +70,6 @@ class Game:
 
             self.screen.fill((201, 203, 206))  # put some color in the background (grey)
 
-            # draw player1 rect
-            rect = pygame.draw.rect(self.screen, (90, 90, 90, 255), pygame.Rect(self.player_pos.x, self.player_pos.y, 20, 150))
-
-            # player2
-            rect2 = pygame.draw.rect(self.screen, (90, 90, 90, 255), pygame.Rect(self.player2_pos.x, self.player2_pos.y, 20, 150))
-
             # draw ball
             circle = pygame.draw.circle(self.screen, (255, 255, 255), self.circle_position, self.circle_radius)
 
@@ -86,48 +81,21 @@ class Game:
             if self.circle_position.y > self.screen.get_height() or self.circle_position.y < 0:
                 self.circle_movement.y *= -1
 
-            self.check_collision(self.circle_position, self.circle_radius, rect, self.circle_movement)
-            self.check_collision(self.circle_position, self.circle_radius, rect2, self.circle_movement)
+            self.check_collision(self.circle_position, self.circle_radius, self.player.rect, self.circle_movement)
+            self.check_collision(self.circle_position, self.circle_radius, self.player_2.rect, self.circle_movement)
 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_ESCAPE]:
                 pygame.quit()
                 sys.exit()
 
-            # set direction to a new vector2, it should be equal to (0,0)
-            direction1 = pygame.Vector2()
-            direction2 = pygame.Vector2()
+            self.player.draw(self.screen)
+            self.player.move(keys, dt)
+
+            self.player_2.draw(self.screen)
+            self.player_2.move(keys, dt)
 
             # logging.debug("Direction : " + str(direction))
-
-            if keys[pygame.K_z]:
-                direction1.y -= 1
-            if keys[pygame.K_s]:
-                direction1.y += 1
-            if keys[pygame.K_UP]:
-                direction2.y -= 1
-            if keys[pygame.K_DOWN]:
-                direction2.y += 1
-
-            # if direction is not (0,0)
-            if direction1 != pygame.Vector2():
-                direction1.normalize_ip()  # normalize so it has a constant speed
-                if rect.top <= 0 and direction1 == pygame.Vector2(0, -1):
-                    self.player_pos = self.player_pos
-                elif rect.bottom >= self.screen.get_height() and direction1 == pygame.Vector2(0, 1):
-                    self.player_pos = self.player_pos
-                else:
-                    self.player_pos += direction1 * dt * self.speed  # add deltaTime and speed
-
-            # if direction is not (0,0)
-            if direction2 != pygame.Vector2():
-                direction2.normalize_ip()  # normalize so it has a constant speed
-                if rect2.top <= 0 and direction2 == pygame.Vector2(0, -1):
-                    self.player2_pos = self.player2_pos
-                elif rect2.bottom >= self.screen.get_height() and direction2 == pygame.Vector2(0, 1):
-                    self.player2_pos = self.player2_pos
-                else:
-                    self.player2_pos += direction2 * dt * self.speed  # add deltaTime and speed
 
             pygame.display.update()
 
