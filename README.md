@@ -23,7 +23,7 @@ At the moment you can move the rect using ZQSD (yes, i am french :D)
 
 ### AMELIORATIONS :
 - Create Ball script
-- Create Player script
+- ~~Create Player script~~
 - Create collision script
 - Create settings script
 
